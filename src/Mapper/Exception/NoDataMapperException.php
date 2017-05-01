@@ -1,6 +1,6 @@
 <?php
 
-namespace ContentinumComponents\Mapper\Exeption;
+namespace ContentinumComponents\Mapper\Exception;
 
 /**
  * Exeption no datas are given

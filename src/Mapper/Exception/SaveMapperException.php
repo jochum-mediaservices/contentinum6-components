@@ -1,6 +1,6 @@
 <?php
 
-namespace ContentinumComponents\Mapper\Exeption;
+namespace ContentinumComponents\Mapper\Exception;
 
 /**
  * Exeption error save mapper in database

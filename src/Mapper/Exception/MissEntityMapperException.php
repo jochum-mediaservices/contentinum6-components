@@ -1,6 +1,6 @@
 <?php
 
-namespace ContentinumComponents\Mapper\Exeption;
+namespace ContentinumComponents\Mapper\Exception;
 
 /**
  * Exeption invalid values or parameters are given
