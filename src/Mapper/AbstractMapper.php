@@ -3,7 +3,7 @@ namespace ContentinumComponents\Mapper;
 
 use ContentinumComponents\Storage\AbstractManager;
 use Doctrine\ORM\EntityManager;
-use ContentinumComponents\Mapper\Exeption\InvalidValueMapperException;
+use ContentinumComponents\Mapper\Exception\InvalidValueMapperException;
 
 abstract class AbstractMapper extends AbstractManager
 {
