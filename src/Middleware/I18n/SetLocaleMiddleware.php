@@ -9,18 +9,26 @@ use Zend\Expressive\Helper\UrlHelper;
 
 class SetLocaleMiddleware implements MiddlewareInterface
 {
+
     private $helper;
     
-    
+    /**
+     * 
+     * @param UrlHelper $helper
+     */
     public function __construct(UrlHelper $helper)
     {
         $this->helper = $helper;
     }
     
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Interop\Http\ServerMiddleware\MiddlewareInterface::process()
+     */
     public function process(ServerRequestInterface  $request,DelegateInterface $delegate)
     {
         $uri = $request->getUri();
-        
         $path = $uri->getPath();
         
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
