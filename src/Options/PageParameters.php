@@ -2,6 +2,7 @@
 namespace ContentinumComponents\Options;
 
 use ContentinumComponents\Options\Exception\InvalidArgumentException;
+use ContentinumComponents\Tools\ArrayMergeRecursiveDistinct;
 
 /**
  * 
@@ -659,19 +660,45 @@ class PageParameters
     }
 
     /**
+     *
      * @return the $app
      */
-    public function getApp()
+    public function getApp($property = null)
     {
-        return $this->app;
+        if (null === $property) {
+            return $this->app;
+        }
+        
+        if (isset($this->app[$property])) {
+            return $this->app[$property];
+        } else {
+            return false;
+        }
     }
-
+    
     /**
+     *
      * @param array $app
      */
     public function setApp($app)
     {
-        $this->app = $app;
+        foreach ($app as $property => $value) {
+            if (in_array($property, $this->appProperties)) {
+                $this->app[$property] = $value;
+            }
+        }
+    }
+    
+    /**
+     *
+     * @param unknown $property
+     * @param unknown $value
+     */
+    public function addAppOptions($property, $value)
+    {
+        if (in_array($property, $this->appProperties)) {
+            $this->app[$property] = $value;
+        }
     }
 
     /**
@@ -687,7 +714,13 @@ class PageParameters
      */
     public function setAssets($assets)
     {
-        $this->assets = $assets;
+        if (null === $this->assets){
+            $this->assets = $assets;
+        } elseif ( is_string($assets) ){
+            $this->assets = array('template' => '/' . $assets);
+        } else {
+            $this->assets = ArrayMergeRecursiveDistinct::merge($this->assets, $assets);
+        }
     }
 
     /**
@@ -1259,6 +1292,28 @@ class PageParameters
                 } //switch
             }
         }
+    }
+    
+    /**
+     * Cast to array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = [];
+        $transform = function ($letters) {
+            $letter = array_shift($letters);
+            return '_' . strtolower($letter);
+        };
+        foreach ($this as $key => $value) {
+            if ($key === '__strictMode__') {
+                continue;
+            }
+            $normalizedKey = preg_replace_callback('/([A-Z])/', $transform, $key);
+            $array[$normalizedKey] = $value;
+        }
+        return $array;
     }
     
     /**
