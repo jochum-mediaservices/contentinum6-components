@@ -6,6 +6,7 @@ namespace ContentinumComponents\Options;
 
 
 use Zend\Stdlib\AbstractOptions;
+use ContentinumComponents\Options\Exception\InvalidArgumentException;
 
 class PageOptions extends AbstractOptions
 {
@@ -1232,7 +1233,7 @@ class PageOptions extends AbstractOptions
             $this->setOptions($options[$this->standardParameters]);
         } else { 
             if (true === $force) {
-                throw new \Contentinum\Options\Exception\InvalidArgumentException('Parameter not found');
+                throw new InvalidArgumentException('Parameter not found');
             }
         }
     }
