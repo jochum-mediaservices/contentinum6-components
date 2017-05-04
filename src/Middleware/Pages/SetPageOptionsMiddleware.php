@@ -7,6 +7,7 @@ use Locale;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 use ContentinumComponents\Options\PageOptions;
+use ContentinumComponents\Options\PageParameters;
 
 class SetPageOptionsMiddleware implements MiddlewareInterface
 {
@@ -15,18 +16,11 @@ class SetPageOptionsMiddleware implements MiddlewareInterface
     
     /**
      * 
-     * @var \Contentinum\Options\PageOptions $pageOptions
-     */
-    private $pageOptions;
-    
-    /**
-     * 
      * @param UrlHelper $helper
      */
-    public function __construct(UrlHelper $helper, PageOptions $pageOptions)
+    public function __construct(UrlHelper $helper)
     {
         $this->helper = $helper;
-        $this->pageOptions = $pageOptions;
     }
     
     /**
@@ -40,25 +34,25 @@ class SetPageOptionsMiddleware implements MiddlewareInterface
         $uri = $request->getUri();
         $path = $uri->getPath();
         
-        $this->pageOptions->setHost($uri->getHost());
-        $this->pageOptions->setProtocol($uri->getScheme());
-        $this->pageOptions->setPort($uri->getPort());
+        $pageOptions = PageParameters::getInstance();
+        $pageOptions->setHost($uri->getHost());
+        $pageOptions->setProtocol($uri->getScheme());
+        $pageOptions->setPort($uri->getPort());
         
         
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
-            $this->pageOptions->setLocale(Locale::getDefault());
-            $this->pageOptions->setQuery($path);
-            $this->pageOptions->generateParams();
-            return $this->pageOptions;
+            $pageOptions->setLocale(Locale::getDefault());
+            $pageOptions->setQuery($path);
+            $pageOptions->generateParams();
+            return $delegate->process($request);
         }
         
         $locale = $matches['locale'];
-        $this->pageOptions->setLocale(Locale::canonicalize($locale));
+        $pageOptions->setLocale(Locale::canonicalize($locale));
         $path = str_replace($matches[0] , '', $path);
-        Locale::setDefault();
-        $this->pageOptions->setQuery($path);
-        $this->pageOptions->generateParams();
+        $pageOptions->setQuery($path);
+        $pageOptions->generateParams();
         
-        return $this->pageOptions;
+        return $delegate->process($request);
     }
 }
