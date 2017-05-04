@@ -110,7 +110,7 @@ class PageParameters
      *
      * @return the $id
      */
-    public static function getId()
+    public function getId()
     {
         return $this->id;
     }
@@ -119,7 +119,7 @@ class PageParameters
      *
      * @param \ContentinumComponents\Page\unknown $id            
      */
-    public static function setId($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -128,7 +128,7 @@ class PageParameters
      *
      * @return the $host
      */
-    public static function getHost()
+    public function getHost()
     {
         return $this->host;
     }
@@ -137,7 +137,7 @@ class PageParameters
      *
      * @param string $host            
      */
-    public static function setHost($host)
+    public function setHost($host)
     {
         $this->host = $host;
     }
