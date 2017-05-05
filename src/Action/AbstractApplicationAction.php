@@ -12,6 +12,12 @@ abstract class AbstractApplicationAction extends AbstractContentinumAction
      * @var Contentinum\Options\PageOptions
      */
     protected $pageOptions;
+    
+    /**
+     * AbstractForms
+     * @var \Contentinum\Forms\AbstractForms
+     */
+    protected $formFactory;
 
     /**
      *
@@ -29,5 +35,21 @@ abstract class AbstractApplicationAction extends AbstractContentinumAction
     public function setPageOptions($pageOptions)
     {
         $this->pageOptions = $pageOptions;
+    }
+    
+    /**
+     * @return the $formFactory
+     */
+    public function getFormFactory()
+    {
+        return $this->formFactory;
+    }
+
+    /**
+     * @param \Contentinum\Forms\AbstractForms $formFactory
+     */
+    public function setFormFactory($formFactory)
+    {
+        $this->formFactory = $formFactory;
     }
 }
