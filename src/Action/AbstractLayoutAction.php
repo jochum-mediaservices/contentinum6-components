@@ -112,6 +112,7 @@ abstract class AbstractLayoutAction extends AbstractApplicationAction
             }
             $layout->prependScripts = $str;
         }
+        return $layout;
     } 
 
     /**
