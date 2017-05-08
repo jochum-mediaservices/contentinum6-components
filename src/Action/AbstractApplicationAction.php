@@ -18,7 +18,6 @@ abstract class AbstractApplicationAction extends AbstractContentinumAction
      * @var \Zend\Expressive\Template\TemplateRendererInterface $template
      */
     protected $template;
-    
     /**
      * PageOptions
      *
