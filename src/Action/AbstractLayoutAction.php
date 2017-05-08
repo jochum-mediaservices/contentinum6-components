@@ -150,6 +150,9 @@ abstract class AbstractLayoutAction extends AbstractApplicationAction
     {
         $layout->charset = $pageOptions->getCharset();
         $layout->viewport = $pageOptions->getMetaViewport();
+        if (null !== ($lang = $pageOptions->getLanguage())){
+            $layout->language = ' lang="'.$lang.'"';
+        }
         if (null !== ($bodyId = $pageOptions->getBodyId())){
             $layout->bodyIdent = ' id="' . $bodyId . '"';
         }
