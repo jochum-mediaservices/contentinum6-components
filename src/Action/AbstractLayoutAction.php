@@ -7,6 +7,7 @@ namespace ContentinumComponents\Action;
 
 
 use ContentinumComponents\Action\AbstractApplicationAction;
+use ContentinumComponents\Assets\Manager;
 
 
 abstract class AbstractLayoutAction extends AbstractApplicationAction
@@ -54,6 +55,64 @@ abstract class AbstractLayoutAction extends AbstractApplicationAction
     {
         $this->documentRoot = $documentRoot;
     }
+    
+    /**
+     * Set navigation
+     * @param Zend\View\Model\ViewModel $layout
+     * @param unknown $navigation
+     * @param unknown $identity
+     * @return \Zend\View\Model\ViewModel
+     */
+    protected function setNavigation($layout, $navigation, $identity)
+    {
+        foreach ($navigation->navigation->default as $entry) {
+            if ('Mcwork_Controller_User' == $entry->label) {
+                $entry->label = 'Hallo '. $identity->name;
+            }
+        }
+        $layout->mcworknavigation = new \Zend\Navigation\Navigation($navigation->navigation->default->toArray());
+        return $layout;
+    }
+    
+    /**
+     * Set access right in layout template
+     * 
+     * @param Zend\View\Model\ViewModel $layout
+     * @param unknown $role
+     * @param unknown $acl
+     * @return \Zend\View\Model\ViewModel
+     */
+    protected function setAccessRights($layout,$role, $acl)
+    {
+        $layout->role = $role;
+        $layout->acl = $acl;
+        return $layout;
+    }
+    
+    /**
+     * Webpage title
+     *
+     * @param Zend\View\Model\ViewModel $layout
+     * @param ContentinumComponents\Options\PageParameters $pageOptions
+     * @return \Zend\View\Model\ViewModel
+     */
+    protected function setAssets(\Zend\View\Model\ViewModel $layout, \ContentinumComponents\Options\PageParameters $pageOptions)
+    {
+        $am = new Manager();
+        $am->setDocumentRoot($this->getDocumentRoot());
+        $am->setRootPath($this->getRootPath());
+        $am->set($pageOptions->getAssets());
+        $layout->stylesheets = $am->getStylesheets();
+        $layout->scripthead = $am->getHeadLink();
+        $layout->scriptInline = $am->getInlineLink();
+        $str = '';
+        if (null !== ($scripts = $pageOptions->getBodyFooterScript())){
+            foreach ($scripts['prepend'] as $key => $script){
+                $str .= $am->getInlineLinkScript($script);
+            }
+            $layout->prependScripts = $str;
+        }
+    } 
 
     /**
      * Webpage title
@@ -75,6 +134,24 @@ abstract class AbstractLayoutAction extends AbstractApplicationAction
             $appendTitle = $title;
         }   
         $layout->headtitle = $appendTitle . $seperator . $prependTitle;
+        return $layout;
+    }
+    
+    /**
+     * Set further attributtes:
+     * charset
+     *
+     * @param Zend\View\Model\ViewModel $layout
+     * @param ContentinumComponents\Options\PageParameters $pageOptions
+     * @return \Zend\View\Model\ViewModel
+     */
+    protected function setAttribute(\Zend\View\Model\ViewModel $layout, \ContentinumComponents\Options\PageParameters $pageOptions)
+    {
+        $layout->charset = $pageOptions->getCharset();
+        $layout->viewport = $pageOptions->getMetaViewport();
+        if (null !== ($bodyId = $pageOptions->getBodyId())){
+            $layout->bodyIdent = ' id="' . $bodyId . '"';
+        }
         return $layout;
     }
     
