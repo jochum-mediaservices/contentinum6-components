@@ -86,6 +86,18 @@ class PageParameters
      * @var string
      */
     protected $standardDomain;
+    
+    /**
+     * 
+     * @var unknown
+     */
+    protected $acl;
+    
+    /**
+     * 
+     * @var unknown
+     */
+    protected $role;
 
     /**
      * Page, Default page and preferences indetifier
@@ -399,6 +411,38 @@ class PageParameters
     public function setStandardDomain($standardDomain)
     {
         $this->standardDomain = $standardDomain;
+    }
+
+    /**
+     * @return the $acl
+     */
+    public function getAcl()
+    {
+        return $this->acl;
+    }
+
+    /**
+     * @param \ContentinumComponents\Options\unknown $acl
+     */
+    public function setAcl($acl)
+    {
+        $this->acl = $acl;
+    }
+
+    /**
+     * @return the $role
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param \ContentinumComponents\Options\unknown $role
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
     }
 
     /**
