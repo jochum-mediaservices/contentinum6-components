@@ -58,19 +58,21 @@ abstract class AbstractLayoutAction extends AbstractApplicationAction
     
     /**
      * Set navigation
+     * 
      * @param Zend\View\Model\ViewModel $layout
-     * @param unknown $navigation
-     * @param unknown $identity
+     * @param Zend\Config\Config $datas
+     * @param string $loginusername
+     * @param string $navigation
      * @return \Zend\View\Model\ViewModel
      */
-    protected function setNavigation($layout, $navigation, $identity)
+    protected function setNavigation($layout, $datas, $loginusername, $navigation)
     {
-        foreach ($navigation->navigation->default as $entry) {
+        foreach ($datas->navigation->default as $entry) {
             if ('Mcwork_Controller_User' == $entry->label) {
-                $entry->label = 'Hallo '. $identity->name;
+                $entry->label = 'Hallo '. $loginusername;
             }
         }
-        $layout->mcworknavigation = new \Zend\Navigation\Navigation($navigation->navigation->default->toArray());
+        $layout->mcworknavigation = new $navigation($datas->navigation->default->toArray());
         return $layout;
     }
     
