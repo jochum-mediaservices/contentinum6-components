@@ -116,6 +116,21 @@ abstract class AbstractLayoutAction extends AbstractApplicationAction
         }
         return $layout;
     } 
+    
+    /**
+     * Webpage title
+     *
+     * @param Zend\View\Model\ViewModel $layout
+     * @param ContentinumComponents\Options\PageParameters $pageOptions
+     * @return \Zend\View\Model\ViewModel
+     */
+    protected function setHeadStyle($layout,  \ContentinumComponents\Options\PageParameters $pageOptions)
+    {
+        if (null !== ($value = $pageOptions->getHeadStyle() ) ) {
+            $layout->headstyles = '<style type="text/css" media="screen">' . $value . '</style>';
+        }
+        return $layout;
+    }
 
     /**
      * Webpage title

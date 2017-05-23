@@ -1148,7 +1148,7 @@ class PageParameters
      */
     public function setHeadStyle($headStyle)
     {
-        $this->headStyle = $headStyle;
+        $this->headStyle = $this->minifyCSS($headStyle);
     }
 
     /**
