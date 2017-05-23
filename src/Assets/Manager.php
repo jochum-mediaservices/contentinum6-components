@@ -14,16 +14,18 @@ use Zend\Config\Config;
 class Manager
 {
 
-    const ASSETS_LASTMODIFIED = '/data/cache/app/assets/lastmodifiedstamp';
-    
+    const ASSETS_LASTMODIFIED = '/data/cache/app/assets/lastmodified';
+
     /**
      * Root path
+     * 
      * @var string
      */
     protected $rootPath;
-    
+
     /**
      * Document root path
+     * 
      * @var string
      */
     protected $documentRoot;
@@ -71,6 +73,7 @@ class Manager
     protected $inlineLink;
 
     /**
+     *
      * @return the $rootPath
      */
     public function getRootPath()
@@ -79,7 +82,8 @@ class Manager
     }
 
     /**
-     * @param string $rootPath
+     *
+     * @param string $rootPath            
      */
     public function setRootPath($rootPath)
     {
@@ -87,6 +91,7 @@ class Manager
     }
 
     /**
+     *
      * @return the $documentRoot
      */
     public function getDocumentRoot()
@@ -95,7 +100,8 @@ class Manager
     }
 
     /**
-     * @param string $documentRoot
+     *
+     * @param string $documentRoot            
      */
     public function setDocumentRoot($documentRoot)
     {
@@ -116,7 +122,7 @@ class Manager
 
     /**
      *
-     * @param \Assetic\FilterManager $fm
+     * @param \Assetic\FilterManager $fm            
      */
     public function setFm(\Assetic\FilterManager $fm)
     {
@@ -134,7 +140,7 @@ class Manager
 
     /**
      *
-     * @param string $assetPath
+     * @param string $assetPath            
      */
     public function setAssetPath($assetPath)
     {
@@ -152,7 +158,7 @@ class Manager
 
     /**
      *
-     * @param string $assetWeb
+     * @param string $assetWeb            
      */
     public function setAssetWeb($assetWeb)
     {
@@ -170,7 +176,7 @@ class Manager
 
     /**
      *
-     * @param string $stylesheets
+     * @param string $stylesheets            
      */
     public function setStylesheets($stylesheets)
     {
@@ -188,7 +194,7 @@ class Manager
 
     /**
      *
-     * @param string $headLink
+     * @param string $headLink            
      */
     public function setHeadLink($headLink)
     {
@@ -206,7 +212,7 @@ class Manager
 
     /**
      *
-     * @param string $inlineLink
+     * @param string $inlineLink            
      */
     public function setInlineLink($inlineLink)
     {
@@ -216,18 +222,18 @@ class Manager
     /**
      * Create assets collections
      *
-     * @param array $assets
+     * @param array $assets            
      * @return array $ln with path to web recources
      */
     public function set($assets)
     {
-        if (isset($assets['template'])){
+        if (isset($assets['template'])) {
             $assets = new Config(include $this->rootPath . $assets['template']);
             $assets = $assets->toArray();
         }
         foreach ($assets['collections'] as $key => $collection) {
             
-            if (isset($assets['sets']) && !in_array($key, $assets['sets'])){
+            if (isset($assets['sets']) && ! in_array($key, $assets['sets'])) {
                 continue;
             }
             
@@ -285,14 +291,15 @@ class Manager
         $js = $factory->createAsset(array(
             '@' . $key
         ), $filters);
-        $js->setTargetPath($key . '.js');
+        $lastModify = $js->getLastModified();
+        $js->setTargetPath($key . '.' . $lastModify . '.js');
         
-        $this->writeAssets($js, self::ASSETS_LASTMODIFIED . $key, $this->documentRoot . $web, '/' . $key . '.js');
+        $this->writeAssets($js, self::ASSETS_LASTMODIFIED . $key, $this->documentRoot . $web, '/' . $key . '.' . $lastModify . '.js');
         $src = '';
         if (isset($collection['onload']) && true === $collection['onload']) {
-            $src = $this->onloadScript($web . '/' . $key . '.js', $collection);
+            $src = $this->onloadScript($web . '/' . $key . '.' . $lastModify . '.js', $collection);
         } else {
-            $src = $this->linkScript($web . '/' . $key . '.js', $collection['attr']);
+            $src = $this->linkScript($web . '/' . $key . '.' . $lastModify . '.js', $collection['attr']);
         }
         if (isset($collection['area']) && 'head' === $collection['area']) {
             $this->setHeadLink($src);
@@ -339,17 +346,18 @@ class Manager
         $css = $factory->createAsset(array(
             '@' . $key
         ), $filters);
-        $css->setTargetPath($key . '.css');
-        $this->writeAssets($css, self::ASSETS_LASTMODIFIED . $key, $this->documentRoot . $web, '/' . $key . '.css');
-        $this->setStylesheets($this->linkStylesheet($web . '/' . $key . '.css', $collection['attr']));
+        $lastModify = $css->getLastModified();
+        $css->setTargetPath($key . '.' . $lastModify . '.css');
+        $this->writeAssets($css, self::ASSETS_LASTMODIFIED . $key, $this->documentRoot . $web, '/' . $key . '.' . $lastModify . '.css');
+        $this->setStylesheets($this->linkStylesheet($web . '/' . $key . '.' . $lastModify . '.css', $collection['attr']));
         return true;
     }
 
     /**
      *
-     * @param array $assets
-     * @param string $key
-     * @param string $path
+     * @param array $assets            
+     * @param string $key            
+     * @param string $path            
      * @return \Assetic\AssetManager $am Assetic\AssetManager
      */
     protected function setAssetsCollection($assets, $key, $path)
@@ -366,8 +374,8 @@ class Manager
     /**
      * Write collection in web folder
      *
-     * @param Assetic\Factory\AssetFactory $assetFactory
-     * @param string $file
+     * @param Assetic\Factory\AssetFactory $assetFactory            
+     * @param string $file            
      */
     protected function writeAssets($assetFactory, $file, $web, $tragetFile)
     {
@@ -378,11 +386,11 @@ class Manager
     }
 
     /**
-     * 
-     * @param unknown $rootPath
-     * @param unknown $docRoot
-     * @param unknown $web
-     * @param unknown $collection
+     *
+     * @param unknown $rootPath            
+     * @param unknown $docRoot            
+     * @param unknown $web            
+     * @param unknown $collection            
      */
     protected function debugWriteAssets($rootPath, $docRoot, $web, $collection)
     {
@@ -408,8 +416,10 @@ class Manager
     /**
      * Compare time stamp assets recource and collection
      *
-     * @param string $lastModified time stamp last modified collection
-     * @param string $file path to lastmodified file last changes
+     * @param string $lastModified
+     *            time stamp last modified collection
+     * @param string $file
+     *            path to lastmodified file last changes
      */
     protected function lastModifedHandler($lastModified, $file, $targetFile)
     {
@@ -418,6 +428,7 @@ class Manager
             file_put_contents($filename, '');
         }
         if (file_get_contents($filename) != $lastModified) {
+            $this->unlinkAssetFile($targetFile, $lastModified, file_get_contents($filename));
             file_put_contents($filename, $lastModified);
             return true;
         } elseif (! is_file($targetFile)) {
@@ -429,8 +440,9 @@ class Manager
 
     /**
      *
-     * @param string $stylesheet path to stylesheet
-     * @param array $attribute
+     * @param string $stylesheet
+     *            path to stylesheet
+     * @param array $attribute            
      */
     protected function linkStylesheet($href, $attribute = array())
     {
@@ -439,27 +451,27 @@ class Manager
 
     /**
      *
-     * @param unknown $script
-     * @param unknown $attribute
+     * @param unknown $script            
+     * @param unknown $attribute            
      */
     protected function linkScript($src, $attribute = array())
     {
         return '<script src="' . $src . '"' . HtmlAttribute::attributeArray($attribute) . '></script>';
     }
-    
+
     /**
-     * 
-     * @param unknown $src
-     * @param unknown $attribute
+     *
+     * @param unknown $src            
+     * @param unknown $attribute            
      */
     public function getInlineLinkScript($src, $attribute = array())
     {
-        return $this->linkScript($src,$attribute);
+        return $this->linkScript($src, $attribute);
     }
 
     /**
      *
-     * @param unknown $src
+     * @param unknown $src            
      */
     protected function onloadScript($src, $collection)
     {
@@ -472,16 +484,30 @@ class Manager
         $str .= 'if(window.addEventListener){window.addEventListener("load",downloadJSAtOnload,false);}';
         $str .= 'else if(window.attachEvent){window.attachEvent("onload",downloadJSAtOnload);}else{window.onload=downloadJSAtOnload;}</script>';
         return $str;
-    }   
+    }
 
     /**
      *
-     * @param array $resources
+     * @param array $resources            
      */
     protected function includeResources(array $resources)
     {
         foreach ($resources as $resource) {
             include $this->rootPath . $resource;
+        }
+    }
+    
+    /**
+     * 
+     * @param string $targetFile
+     * @param string $new
+     * @param string $old
+     */
+    protected function unlinkAssetFile($targetFile, $new, $old)
+    {
+        if ('' != $old){
+            $file = str_replace($new, $old, $targetFile);
+            @unlink($file);
         }
     }
 }
